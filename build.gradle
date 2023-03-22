@@ -1,0 +1,151 @@
+buildscript {
+    ext {
+        // Variables if any
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+plugins {
+    id 'java'
+    id 'org.javamodularity.moduleplugin' version "1.8.12"
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.jlink' version '2.26.0' // Badass JLink Plugin from Serban Iordache
+}
+
+group 'com.quizcreator'
+version '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+
+jar {
+    baseName = 'easy-quiz-creator-client'
+    version = '0.0.1-internal-dev'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+targetCompatibility = "17"
+sourceCompatibility = "17"
+
+project.description = "Create your own quiz games with ease"
+project.ext.buildDate = new Date()
+
+dependencies {
+    implementation('org.controlsfx:controlsfx:11.1.2')
+    implementation('com.dlsc.formsfx:formsfx-core:11.5.0') {
+        exclude(group: 'org.openjfx')
+    }
+
+    implementation('org.kordamp.ikonli:ikonli-javafx:12.3.1')
+    implementation('org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0')
+    implementation('org.jdom:jdom2:2.0.6')
+
+    implementation('org.apache.logging.log4j:log4j-api:2.17.1')
+    implementation('org.apache.logging.log4j:log4j-core:2.17.1')
+    implementation('org.apache.logging.log4j:log4j-slf4j-impl:2.17.1')
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+}
+javafx {
+    version = "19"
+    modules = [ 'javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media' ]
+}
+
+application {
+    mainModule = 'com.quizcreator.app'
+    mainClass = 'com.quizcreator.app.QuizCreatorApplication'
+}
+
+run {
+    jvmArgs = ['-Djdk.gtk.version=2']
+}
+
+jlink {
+    launcher {
+        name = 'Easy Quiz Creator'
+        jvmArgs = ['-Djdk.gtk.version=2']
+    }
+    forceMerge('log4j-api')
+    jpackage {
+        resourceDir = file('package/')
+
+        if (org.gradle.internal.os.OperatingSystem.current().linux) {
+            installerType = 'deb' // rpm also possible
+
+            targetPlatformName = "linux-x64"
+            targetPlatform("linux-x64") {
+                jdkHome = '/home/robin/Temurin/jdk-17.0.6+10'
+            }
+            installerOutputDir = new File('installer/linux')
+        }
+
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            targetPlatformName = "win"
+            targetPlatform("win") {
+                jdkHome = '' // insert Temurin 17 path
+            }
+            installerType = 'exe'
+            installerOutputDir = new File('installer/windows')
+        }
+
+        if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+            targetPlatformName = "mac"
+            targetPlatform("mac") {
+                jdkHome = '' // insert Temurin 17 path
+            }
+            installerType = 'pkg'
+            installerOutputDir = new File('installer/macOsX')
+        }
+
+        installerOptions = List.of('--description', project.description.toString(),
+                '--app-version', version.toString(),
+                '--copyright', 'Copyright 2023 Robin Kindler',
+                '--name', 'Easy Quiz Creator',
+                '--vendor', 'Robin Kindler')
+
+        if (installerType == 'pkg') {
+            imageOptions += ['--icon', 'src/main/resources/icon.icns']
+            installerOptions.addAll(List.of(
+                    '--license-file', 'package/LICENSE-OS-Installer.txt'
+            ))
+        }
+
+        if (installerType == 'exe') {
+            imageOptions += ['--icon', 'src/main/resources/icon.ico']
+            installerOptions.addAll(List.of(
+                    // '--win-per-user-install', // Install only for current user
+                    // '--win-console', // Shows what Java outputs to the console
+                    '--win-dir-chooser',
+                    '--win-menu', '--win-shortcut'
+            ))
+        }
+
+        if (installerType in ['deb', 'rpm']) {
+            imageOptions += ['--icon', 'src/main/resources/icon_256.png']
+            installerOptions += [
+                    '--linux-menu-group', 'Games',
+                    '--linux-shortcut',
+                    '--resource-dir', "build/jpackage/Easy Quiz Creator/lib",
+            ]
+        }
+
+        if (installerType == 'deb') {
+            installerOptions += [
+                    '--linux-deb-maintainer', 'rondidon@web.de'
+            ]
+        }
+
+        if (installerType == 'rpm') {
+            installerOptions += [
+                    '--linux-rpm-license-type', 'GPLv3' // maybe MIT
+            ]
+        }
+    }
+}

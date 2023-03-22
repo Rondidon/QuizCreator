@@ -1,0 +1,28 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="quizcreator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/quizcreator_jar</output-path>
+    <root id="archive" name="quizcreator.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="library" level="project" name="Gradle: com.dlsc.formsfx:formsfx-core:11.5.0" />
+      <element id="library" level="project" name="Gradle: org.controlsfx:controlsfx:11.1.2" />
+      <element id="library" level="project" name="Gradle: org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0" />
+      <element id="library" level="project" name="Gradle: org.kordamp.ikonli:ikonli-core:12.3.1" />
+      <element id="library" level="project" name="Gradle: org.kordamp.ikonli:ikonli-javafx:12.3.1" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-base:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-base:linux:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-controls:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-controls:linux:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-fxml:linux:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-graphics:17.0.2" />
+      <element id="library" level="project" name="Gradle: org.openjfx:javafx-graphics:linux:17.0.2" />
+      <element id="module-output" name="quizcreator.main" />
+      <element id="library" level="project" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.9.1" />
+      <element id="library" level="project" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.9.1" />
+      <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-commons:1.9.1" />
+      <element id="library" level="project" name="Gradle: org.junit.platform:junit-platform-engine:1.9.1" />
+      <element id="library" level="project" name="Gradle: org.opentest4j:opentest4j:1.2.0" />
+    </root>
+  </artifact>
+</component>
