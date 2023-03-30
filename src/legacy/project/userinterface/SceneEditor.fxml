@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="root" prefHeight="576.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar>
+              <menus>
+                  <Menu mnemonicParsing="false" text="%menubar_project">
+                    <items>
+                      <MenuItem fx:id="menuitemLoad" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_load">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <Menu fx:id="menuLastEdited" mnemonicParsing="false" text="%menubar_lastedited" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuitemSave" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_save">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem fx:id="menuitemSaveAs" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_saveas">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuitemPlay" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_playquiz">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem fx:id="menuitemPublish" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_publish" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="menuitemClose" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_close" />
+                    </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="%menubar_questioncontainer">
+                  <items>
+                    <MenuItem fx:id="menuitemImportQC" disable="true" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_import" />
+                        <MenuItem fx:id="menuitemExportQC" disable="true" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_export" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menubar_onlineshop">
+                  <items>
+                    <MenuItem fx:id="menuitemAddons" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_buyaddons" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menubar_help">
+                  <items>
+                    <MenuItem fx:id="menuitemManual" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_manual" />
+                        <MenuItem fx:id="menuitemTutorials" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_videotut" />
+                        <MenuItem fx:id="menuitemAboutUs" mnemonicParsing="false" onAction="#handleButtonAction" text="%menubar_about" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <BorderPane style="-fx-background-color: #87CEFA;">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <left>
+                  <ToolBar style="-fx-background-color: #87CEFA;" BorderPane.alignment="CENTER">
+                    <items>
+                        <Button fx:id="buttonNew" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imageNew" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
+                      <Button fx:id="buttonLoad" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imageOpen" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
+                        <Button fx:id="buttonSave" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imageSave" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
+                        <Button fx:id="buttonPlay" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imagePlay" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
+                        <Button fx:id="buttonPublish" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imagePublish" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic></Button>
+                        <Button fx:id="buttonWebshop" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="35.0" prefWidth="35.0">
+                           <graphic>
+                              <ImageView fx:id="imageWebshop" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                    </items>
+                     <padding>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </padding>
+                  </ToolBar>
+               </left>
+               <right>
+                  <Label text="Quiz Game Maker" textFill="#7c7c7c" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <BorderPane.margin>
+                        <Insets right="8.0" />
+                     </BorderPane.margin>
+                     <effect>
+                        <Reflection bottomOpacity="0.09" fraction="0.45" topOffset="-2.0" topOpacity="0.27" />
+                     </effect>
+                  </Label>
+               </right>
+            </BorderPane>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TabPane prefHeight="480.0" prefWidth="800.0" style="-fx-tab-min-width: 175;" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab fx:id="tabCreateQuestionPacks" closable="false" text="%tab_createquestioncontainer" />
+          <Tab fx:id="tabConfigureQuiz" closable="false" text="%tab_configurequiz" />
+            <Tab fx:id="tabManageMedia" closable="false" text="%tab_managemedia" />
+        </tabs>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </TabPane>
+   </center>
+</BorderPane>

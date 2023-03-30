@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="800.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.quizgamemaker.userinterface.SceneCreateQuestion">
+   <bottom>
+      <HBox id="color-footer" alignment="CENTER_RIGHT" spacing="5.0" stylesheets="@skin.css" BorderPane.alignment="CENTER_RIGHT">
+         <children>
+            <Button fx:id="buttonCancel" mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="75.0" text="%button_cancel" />
+            <Button fx:id="buttonBack" mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="75.0" text="%button_back" />
+            <Button fx:id="buttonPreview" mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="75.0" text="%button_preview" />
+            <Button fx:id="buttonCreate" mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="75.0" text="%button_createquestion" />
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   <top>
+      <BorderPane id="color-header" stylesheets="@skin.css" BorderPane.alignment="CENTER">
+         <left>
+            <Label text="%label_createquestion" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" text="?" BorderPane.alignment="CENTER" />
+         </right>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </BorderPane>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <content>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+               <children>
+                  <Label text="%label_basics">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_type">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxType" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Label text="Frage">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_text">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="choiceBoxText" maxWidth="1.7976931348623157E308" promptText="%text_promptQuestionText" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </Separator>
+                  <Label text="%label_answers">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_right">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="choiceBoxRight" maxWidth="1.7976931348623157E308" promptText="%text_promptQuestionAnswer" HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="H" />
+                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="R" />
+                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="X" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_add">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Button fx:id="buttonRightAnswer" mnemonicParsing="false" onAction="#handleButtonAction" prefWidth="125.0" text="%button_rightanswer" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="buttonWrongAnswer" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleButtonAction" text="%button_wronganswer" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets right="100.0" />
+                           </HBox.margin></Button>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </Separator>
+                  <Label text="%label_feedback">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_positive">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="textFieldPositiveFeedback" maxWidth="1.7976931348623157E308" promptText="%text_promptPositive" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_negative">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="textFieldNegativeFeedback" maxWidth="1.7976931348623157E308" promptText="%text_promptNegative" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </Separator>
+                  <Label text="%label_joker">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_fiftyfifty">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxFiftyFifty" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_change">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxChange" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_tip">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxTip" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_tiptext">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <TextField fx:id="textFieldTipText" maxWidth="1.7976931348623157E308" promptText="%text_prompttiptext" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
+                  </Separator>
+                  <Label text="%label_media">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_graphic">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Button fx:id="buttonGraphic" alignment="CENTER" contentDisplay="BOTTOM" graphicTextGap="5.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleButtonAction" text="%button_choose" HBox.hgrow="ALWAYS">
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_soundm">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxSoundM" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="5.0">
+                     <children>
+                        <Label minWidth="100.0" prefWidth="100.0" text="%label_sounda">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ChoiceBox fx:id="choiceBoxSoundA" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>

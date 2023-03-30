@@ -4,8 +4,7 @@ module com.quizcreator.app {
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
-    requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
+    requires javafx.media;
 
     opens com.quizcreator.app to javafx.fxml;
     exports com.quizcreator.app;
