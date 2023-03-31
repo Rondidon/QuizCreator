@@ -1,9 +1,10 @@
 package com.quizcreator.app.userinterface;
 
-import com.quizcreator.app.data.Program;
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.ie.Exporter;
 import com.quizcreator.app.ie.Importer;
 import com.quizcreator.app.ie.IncompatibleVersionException;
+import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,6 +31,12 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SceneEditor implements Initializable {
+
+	private final ImageLoader imageLoader;
+
+	public SceneEditor(final ImageLoader imageLoader) {
+		this.imageLoader = imageLoader;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) { }
@@ -89,7 +96,7 @@ public class SceneEditor implements Initializable {
 	 */
 	private void refreshScene() {
 		root.setEffect(null);
-		WindowManager.getStage("editorStage").setTitle(Program.getProject().getTitle().concat(" - Quiz Game Maker"));
+		WindowManager.getStage("editorStage").setTitle(QuizCreatorApplication.getProject().getTitle().concat(" - Quiz Game Maker"));
 		tabCreateQuestionPacks.setContent(new PaneCreateQuestionPacks().getPane());
 		tabConfigureQuiz.setContent(new PaneConfigureQuiz().getPane());
 		tabManageMedia.setContent(new PaneManageMedia().getPane());
@@ -97,11 +104,11 @@ public class SceneEditor implements Initializable {
 		menuLastEdited.getItems().clear();
 		
 		// last edited projects
-		String[] a = Program.getProjectLocations().keySet().toArray(new String[Program.getProjectLocations().keySet().size()]);
+		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
 		for(int i=0; i<a.length; i++) {
 			MenuItem item = new MenuItem();
 			String location = a[i];
-			item.setText(Program.getProjectLocations().get(a[i]) + "\n(" + location + ")");
+			item.setText(QuizCreatorApplication.getProjectLocations().get(a[i]) + "\n(" + location + ")");
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -111,14 +118,14 @@ public class SceneEditor implements Initializable {
 			menuLastEdited.getItems().add(item);
 		}
 		
-		if(Program.getProjectLocations().size() > 0) {
+		if(QuizCreatorApplication.getProjectLocations().size() > 0) {
 			menuLastEdited.setVisible(true);
 			MenuItem menuitemClear = new MenuItem();
 			menuitemClear.setText(bundle.getString("menubar_clearlist"));
 			menuitemClear.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					Program.getProjectLocations().clear();
+					QuizCreatorApplication.getProjectLocations().clear();
 					Exporter e = new Exporter();
 					e.saveProgramSettings();
 					refreshScene();
@@ -140,13 +147,13 @@ public class SceneEditor implements Initializable {
 		WindowManager.setBoxEffect("editorStage");
 		
 		try {
-			alert.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("res/img/logo.png"))));
+			alert.setGraphic(new ImageView(imageLoader.load("logo.png")));
 		} catch (Exception e) {
 			System.out.println("Could not load: res/img/logo.png");
 		}
 		
 		alert.setTitle(bundle.getString("title_aboutus"));
-		alert.setHeaderText(bundle.getString("title_software").concat("\nVersion: " + Program.getVersion() + "\n" + "\u00a9" +  "2020 Kindler Software"));
+		alert.setHeaderText(bundle.getString("title_software").concat("\nVersion: " + QuizCreatorApplication.getVersion() + "\n" + "\u00a9" +  "2020 Kindler Software"));
 		alert.getDialogPane().setPrefSize(400, 220);
 		alert.setContentText(bundle.getString("text_aboutus"));
 		ButtonType buttonClose = new ButtonType(bundle.getString("button_close"));
@@ -260,15 +267,15 @@ public class SceneEditor implements Initializable {
 		fileChooser.setTitle("Projekt speichern unter...");
 		fileChooser.getExtensionFilters().addAll(
 				new ExtensionFilter("QuizGameMaker Projekt *.qgm", "*.qgm"));
-				fileChooser.setInitialFileName(Program.getProject().getTitle().concat(".qgm"));
+				fileChooser.setInitialFileName(QuizCreatorApplication.getProject().getTitle().concat(".qgm"));
 				File selectedFile = fileChooser.showSaveDialog(WindowManager.getStage("editorStage"));	
 				if(selectedFile != null) {
 					String location = selectedFile.toString();
 					// Exporter
 					Exporter exporter = new Exporter();
-					exporter.saveProject(Program.getProject(), location);
-					Program.getProject().setProjectLocation(location);
-					Program.getProjectLocations().put( location, Program.getProject().getTitle());
+					exporter.saveProject(QuizCreatorApplication.getProject(), location);
+					QuizCreatorApplication.getProject().setProjectLocation(location);
+					QuizCreatorApplication.getProjectLocations().put( location, QuizCreatorApplication.getProject().getTitle());
 					refreshScene();
 				}
 				root.setEffect(null);
@@ -279,17 +286,17 @@ public class SceneEditor implements Initializable {
 	 */
 	private void saveProject() {
 		// if project was not saved yet
-		if(Program.getProject().getProjectLocation().equals("")) {
+		if(QuizCreatorApplication.getProject().getProjectLocation().equals("")) {
 			saveProjectAs();
 		}
 		// if project has already been saved or was loaded before
 		else {
-			String location = Program.getProject().getProjectLocation();
+			String location = QuizCreatorApplication.getProject().getProjectLocation();
 			// Exporter
 			Exporter exporter = new Exporter();
-			exporter.saveProject(Program.getProject(), location);
-			Program.getProject().setProjectLocation(location);
-			Program.getProjectLocations().put( location, Program.getProject().getTitle());
+			exporter.saveProject(QuizCreatorApplication.getProject(), location);
+			QuizCreatorApplication.getProject().setProjectLocation(location);
+			QuizCreatorApplication.getProjectLocations().put( location, QuizCreatorApplication.getProject().getTitle());
 		}
 	}
 	
@@ -313,12 +320,12 @@ public class SceneEditor implements Initializable {
 			WindowManager.closeStage("editorStage");
 			Stage welcomeStage = new Stage();
 			WindowManager.addStage(welcomeStage, "welcomeStage");
-			WindowManager.openWelcomeStage(welcomeStage, true);
+			SceneWelcome.open(welcomeStage, true);
 		} else if(result.get() == buttonTypeDontSave) {
 		    WindowManager.closeStage("editorStage");
 		    Stage welcomeStage = new Stage();
 		    WindowManager.addStage(welcomeStage, "welcomeStage");
-		    WindowManager.openWelcomeStage(welcomeStage, true);
+		    SceneWelcome.open(welcomeStage, true);
 		} else {
 			root.setEffect(null);
 		}
@@ -339,23 +346,19 @@ public class SceneEditor implements Initializable {
 			scene = null;
 			e.printStackTrace();
 		}
-		
-		try {
-			imageNew.setImage(new Image(new FileInputStream("res/img/icon_new.png")));
-			buttonNew.setTooltip(new Tooltip(bundle.getString("tooltip_newproject")));
-			imageOpen.setImage(new Image(new FileInputStream("res/img/icon_open.png")));
-			buttonLoad.setTooltip(new Tooltip(bundle.getString("tooltip_loadproject")));
-			imageSave.setImage(new Image(new FileInputStream("res/img/icon_save.png")));
-			buttonSave.setTooltip(new Tooltip(bundle.getString("tooltip_saveproject")));
-			imagePlay.setImage(new Image(new FileInputStream("res/img/icon_play.png")));
-			buttonPlay.setTooltip(new Tooltip(bundle.getString("tooltip_playproject")));
-			imagePublish.setImage(new Image(new FileInputStream("res/img/icon_publish.png")));
-			buttonPublish.setTooltip(new Tooltip(bundle.getString("tooltip_publishproject")));
-			imageWebshop.setImage(new Image(new FileInputStream("res/img/icon_webshop.png")));
-			buttonWebshop.setTooltip(new Tooltip(bundle.getString("tooltip_webshop")));
-		} catch (FileNotFoundException e) {
-			System.out.println("Could not load some icon png images in res/img/icon:xx.png");
-		}
+
+		imageNew.setImage(imageLoader.load("icon_new.png"));
+		buttonNew.setTooltip(new Tooltip(bundle.getString("tooltip_newproject")));
+		imageOpen.setImage(imageLoader.load("icon_open.png"));
+		buttonLoad.setTooltip(new Tooltip(bundle.getString("tooltip_loadproject")));
+		imageSave.setImage(imageLoader.load("icon_save.png"));
+		buttonSave.setTooltip(new Tooltip(bundle.getString("tooltip_saveproject")));
+		imagePlay.setImage(imageLoader.load("icon_play.png"));
+		buttonPlay.setTooltip(new Tooltip(bundle.getString("tooltip_playproject")));
+		imagePublish.setImage(imageLoader.load("icon_publish.png"));
+		buttonPublish.setTooltip(new Tooltip(bundle.getString("tooltip_publishproject")));
+		imageWebshop.setImage(imageLoader.load("icon_webshop.png"));
+		buttonWebshop.setTooltip(new Tooltip(bundle.getString("tooltip_webshop")));
 		
 		WindowManager.getStage("editorStage").setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override

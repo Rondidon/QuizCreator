@@ -1,13 +1,14 @@
 package com.quizcreator.app.test;
-import java.io.File;
 
-import com.quizcreator.app.data.*;
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.ie.Exporter;
 import com.quizcreator.app.ie.Importer;
 import javafx.application.Application;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
+
+import java.io.File;
 
 public class TestAudioImport extends Application {
 	
@@ -17,7 +18,7 @@ public class TestAudioImport extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Program.setupProgram();
+		QuizCreatorApplication.setupProgram();
 		
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Audio Datei importieren...");
@@ -30,7 +31,7 @@ public class TestAudioImport extends Application {
 			i.importAudioFile(location, selectedFile.getName());
 		}
 		Exporter e = new Exporter();
-		e.saveProject(Program.getProject(), "/home/robin/Schreibtisch/blabla.qgm");
+		e.saveProject(QuizCreatorApplication.getProject(), "/home/robin/Schreibtisch/blabla.qgm");
 		
 		System.exit(0);
 	}

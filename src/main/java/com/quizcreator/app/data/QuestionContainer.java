@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -29,7 +30,7 @@ public class QuestionContainer extends Event {
 		setTimePlusRightAnswer(0);
 		setWinAmount(0);
 		setPoints(0);
-		if(Program.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
 	}
 	
 	/**
@@ -43,7 +44,7 @@ public class QuestionContainer extends Event {
 		setTimePlusRightAnswer(0);
 		setWinAmount(0);
 		setPoints(0);
-		if(Program.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
 	}
 	
 	public List<Question> getQuestionList() {
@@ -61,7 +62,7 @@ public class QuestionContainer extends Event {
 	public void refreshAnswerAmountForAllQuestions() {
 		for(Question q:getQuestionList()) {
 			q.refreshAnswerAmount();
-			if(Program.DEBUG) System.out.println("refreshAnswerAmountForAllQuestions");
+			if(QuizCreatorApplication.DEBUG) System.out.println("refreshAnswerAmountForAllQuestions");
 		}
 	}
 	

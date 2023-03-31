@@ -1,5 +1,7 @@
 package com.quizcreator.app.tools;
 
+import com.quizcreator.app.QuizCreatorApplication;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import com.quizcreator.app.data.Program;
 
 public class ZipUtilities {
 /**
@@ -47,7 +47,7 @@ public class ZipUtilities {
 		for(int i = 0; i < srcFiles.length; i++) {
 			// Pfad innerhalb der QGM Datei berechnen
 			String locationInZipfile = srcFiles[i].getPath().replace(stringToConcatFromLocation, "");
-			if(Program.DEBUG) System.out.println("navigating to location in QGM file: " + locationInZipfile);
+			if(QuizCreatorApplication.DEBUG) System.out.println("navigating to location in QGM file: " + locationInZipfile);
 			
 			// Falls Zipdatei nicht bereits existiert
 			if(!zipFile.exists()) {
@@ -86,14 +86,14 @@ public class ZipUtilities {
 	  private static void extractFile(ZipInputStream in, File outdir, String name) throws IOException
 	  {
 		outdir.mkdirs();
-		if(Program.DEBUG) System.out.print("Extracting from QGM file into: " + outdir + "/" + name + " ... ");
+		if(QuizCreatorApplication.DEBUG) System.out.print("Extracting from QGM file into: " + outdir + "/" + name + " ... ");
 	    byte[] buffer = new byte[BUFFER_SIZE];
 	    BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outdir,name)));
 	    int count = -1;
 	    while ((count = in.read(buffer)) != -1)
 	      out.write(buffer, 0, count);
 	    out.close();
-	    if(Program.DEBUG) System.out.print("Done\n");
+	    if(QuizCreatorApplication.DEBUG) System.out.print("Done\n");
 	  }
 
 	  private static void mkdirs(File outdir,String path)
@@ -142,7 +142,7 @@ public class ZipUtilities {
 	        extractFile(zin, outdir, name);
 	      }
 	      zin.close();
-	      if(Program.DEBUG) System.out.println("QGM file successfully unpacked into: " + outdir);
+	      if(QuizCreatorApplication.DEBUG) System.out.println("QGM file successfully unpacked into: " + outdir);
 	    } 
 	    catch (IOException e)
 	    {
@@ -182,7 +182,7 @@ public class ZipUtilities {
         	 /* Path to source file */   
         	p = Paths.get(sourceLocation);
             Path file_to_zip = Paths.get(p.toUri());
-            if(Program.DEBUG) System.out.print("Copying into .QGM File: " + file_to_zip.toString() + " ... ");
+            if(QuizCreatorApplication.DEBUG) System.out.print("Copying into .QGM File: " + file_to_zip.toString() + " ... ");
   //          System.out.println("file_to_zip: " + file_to_zip);
             /* Path inside ZIP File. Create it if it doesn't exist */
             Path pathInZipfile = zipfs.getPath(targetPathInZIPFile);
@@ -192,7 +192,7 @@ public class ZipUtilities {
   //          System.out.println("zip file path: " + pathInZipfile.toString());
             /* Add file to archive, replace existing files */
             Files.copy(file_to_zip,pathInZipfile,StandardCopyOption.REPLACE_EXISTING); 
-            if(Program.DEBUG) System.out.print("done\n");
+            if(QuizCreatorApplication.DEBUG) System.out.print("done\n");
         } catch (IOException e) {
 			// TODO Auto-generated catch block
         	System.out.println("ERROR in writeFileIntoZIP!");
@@ -218,10 +218,10 @@ public class ZipUtilities {
         try (FileSystem zipfs = FileSystems.newFileSystem(zip_disk, zip_properties)) {
             /* Get the Path inside ZIP File to delete the ZIP Entry */
             Path pathInZipfile = zipfs.getPath(locationInZipFile);
-            if(Program.DEBUG) System.out.println("About to delete an entry from ZIP File " + pathInZipfile.toUri() ); 
+            if(QuizCreatorApplication.DEBUG) System.out.println("About to delete an entry from ZIP File " + pathInZipfile.toUri() );
             /* Execute Delete */
             Files.delete(pathInZipfile);
-            if(Program.DEBUG) System.out.println("File successfully deleted");   
+            if(QuizCreatorApplication.DEBUG) System.out.println("File successfully deleted");
         } 
         catch(Exception e) {
         	System.out.println("ERROR in deleteFileFromZIP!");

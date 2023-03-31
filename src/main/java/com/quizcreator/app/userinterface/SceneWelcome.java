@@ -8,10 +8,11 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.quizcreator.app.data.Program;
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.ie.Exporter;
 import com.quizcreator.app.ie.Importer;
 import com.quizcreator.app.ie.IncompatibleVersionException;
+import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
@@ -31,6 +32,12 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class SceneWelcome implements Initializable {
+	private final ImageLoader imageLoader;
+
+	public SceneWelcome(final ImageLoader imageLoader) {
+		this.imageLoader = imageLoader;
+	}
+
 	private ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
 	
 	@FXML private Button buttonNewProject;
@@ -81,29 +88,17 @@ public class SceneWelcome implements Initializable {
 		
 		// language logo for German
 		if(Locale.getDefault() == Locale.GERMAN) {
-			Image i;
-			try {
-				i = new Image(new FileInputStream("res/img/icon_german.png"));
-				imageLanguage.setImage(i);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_german.png");
-			}
+			final var image = imageLoader.load("icon_german.png");
+			imageLanguage.setImage(image);
 		}
 		// language logo for English
 		else {
-			Image i;
-			try {
-				i = new Image(new FileInputStream("res/img/icon_uk.png"));
-				imageLanguage.setImage(i);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_uk.png");
-			}
+			final var image = imageLoader.load("icon_uk.png");
+			imageLanguage.setImage(image);
 		}
 		
 		//build text for labelFooter
-		labelFooter.setText(bundle.getString("fragment_version") + " " + Program.getVersion() + ". ");
+		labelFooter.setText(bundle.getString("fragment_version") + " " + QuizCreatorApplication.getVersion() + ". ");
 		
 	}
 	
@@ -144,11 +139,11 @@ public class SceneWelcome implements Initializable {
 			WindowManager.closeStage("welcomeStage");
 			Stage s = new Stage();
 			WindowManager.addStage(s, "editorStage");
-			SceneEditor e = new SceneEditor();
+			SceneEditor e = new SceneEditor(imageLoader);
 			s.setScene(e.getScene());
 			s.centerOnScreen();
 			s.show();
-			s.setTitle(Program.getProject().getTitle().concat(" - " + bundle.getString("title_software")));
+			s.setTitle(QuizCreatorApplication.getProject().getTitle().concat(" - " + bundle.getString("title_software")));
 		} catch (IncompatibleVersionException e) {
 			e.printStackTrace();
 			Alert alert2 = new Alert(AlertType.ERROR);
@@ -167,8 +162,8 @@ public class SceneWelcome implements Initializable {
 	@FXML
 	protected void handleButtonAction(ActionEvent e) {
 		if(e.getSource() == buttonNewProject) {
-			if(Program.DEBUG) System.out.println("New Project");
-			SceneNewProject npc = new SceneNewProject();
+			if(QuizCreatorApplication.DEBUG) System.out.println("New Project");
+			SceneNewProject npc = new SceneNewProject(imageLoader);
 			Stage newprojectStage = new Stage();
 			Stage welcomeStage = WindowManager.getStage("welcomeStage");
 			WindowManager.addStage(newprojectStage, "newProjectStage");
@@ -186,7 +181,7 @@ public class SceneWelcome implements Initializable {
 			WindowManager.bindStagePositionRelativeToParent(newprojectStage, welcomeStage);
 		}
 		if(e.getSource() == buttonOpenProject) {
-			if(Program.DEBUG) System.out.println("Open Project");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Open Project");
 			loadProject();
 		}
 		if(e.getSource() == buttonManual) {
@@ -200,12 +195,12 @@ public class SceneWelcome implements Initializable {
 			if(Locale.getDefault() == Locale.GERMAN) {
 				// Change language
 				Locale.setDefault(Locale.ENGLISH);
-				if(Program.DEBUG) System.out.println("Language change: English");
+				if(QuizCreatorApplication.DEBUG) System.out.println("Language change: English");
 			}
 			// English -> German
 			else {
 				Locale.setDefault(Locale.GERMAN);
-				if(Program.DEBUG) System.out.println("Language change: German");
+				if(QuizCreatorApplication.DEBUG) System.out.println("Language change: German");
 			}
 			refresh();
 			Exporter exporter = new Exporter();
@@ -216,11 +211,11 @@ public class SceneWelcome implements Initializable {
 	private void refreshLastEditedProjects() {
 		// last edited projects
 		vboxLastEdited.getChildren().clear();
-		String[] a = Program.getProjectLocations().keySet().toArray(new String[Program.getProjectLocations().keySet().size()]);
+		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
 		for(int i=0; i<a.length; i++) {
 			Button button = new Button();
 			String location = a[i];
-			button.setText(Program.getProjectLocations().get(a[i]) + "\n(" + location + ")");
+			button.setText(QuizCreatorApplication.getProjectLocations().get(a[i]) + "\n(" + location + ")");
 			button.setMinHeight(48);
 			button.setPrefWidth(Double.MAX_VALUE);
 			button.maxWidth(Double.MAX_VALUE);
@@ -232,14 +227,14 @@ public class SceneWelcome implements Initializable {
 			});
 			vboxLastEdited.getChildren().add(button);
 		}
-		if(Program.getProjectLocations().keySet().size() > 0) {
+		if(QuizCreatorApplication.getProjectLocations().keySet().size() > 0) {
 			Button buttonClear = new Button();
 			buttonClear.setText(bundle.getString("menubar_clearlist"));
 			buttonClear.setPrefWidth(50000);
 			buttonClear.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					Program.getProjectLocations().clear();
+					QuizCreatorApplication.getProjectLocations().clear();
 					Exporter e = new Exporter();
 					e.saveProgramSettings();
 					refreshLastEditedProjects();
@@ -263,52 +258,16 @@ public class SceneWelcome implements Initializable {
 			scene = new Scene(loader.load());
 			
 			if(resetProgram) {
-				Program.setupProgram();
+				QuizCreatorApplication.setupProgram();
 			}
 			
-			// load images
-			Image i;
-			try {
-				i = new Image(new FileInputStream("res/img/icon_new.png"));
-				imageNewProject.setImage(i);
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_new.png");
-			}
-			try {
-				i = new Image(new FileInputStream("res/img/icon_open.png"));
-				imageOpenProject.setImage(i);
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_open.png");
-			}
-			try {
-				i = new Image(new FileInputStream("res/img/icon_manual.png"));
-				imageManual.setImage(i);
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_manual.png");
-			}
-			try {
-				i = new Image(new FileInputStream("res/img/icon_videotut.png"));
-				imageVideotut.setImage(i);
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/icon_videotut.png");
-			}
-			try {
-				i = new Image(new FileInputStream("res/img/logo.png"));
-				imageLogo.setImage(i);
-				
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Could not load: res/img/logo.png");
-			}
-			
+			// set images
+			imageNewProject.setImage(imageLoader.load("icon_new.png"));
+			imageOpenProject.setImage(imageLoader.load("icon_open.png"));
+			imageManual.setImage(imageLoader.load("icon_manual.png"));
+			imageVideotut.setImage(imageLoader.load("icon_videotut.png"));
+			imageLogo.setImage(imageLoader.load("logo_256.png"));
+
 			refresh();
 			refreshLastEditedProjects();
 			return scene ;
@@ -323,5 +282,32 @@ public class SceneWelcome implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/**
+	 * Opens the Welcome Screen
+	 * @param programReset TRUE if the Program data (Quiz data etc) shall be reset. Useful after close project or at first start
+	 */
+	public static void open(Stage stage, Boolean programReset) {
+		SceneWelcome ws = new SceneWelcome(new ImageLoader());
+		Importer i = new Importer();
+		try {
+			i.loadProgramSettings();
+		} catch (IncompatibleVersionException e) {
+			if(System.getProperty("user.language").equals("de")) {
+				Locale.setDefault(Locale.GERMAN);
+			}
+			else {
+				Locale.setDefault(Locale.ENGLISH);
+			}
+			Exporter exporter = new Exporter();
+			exporter.saveProgramSettings();
+		}
+		stage.setScene(ws.getScene(programReset));
+		ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
+		stage.setTitle(bundle.getString("title_welcome"));
+		stage.setResizable(false);
+		stage.show();
+		System.out.println(QuizCreatorApplication.getProjectLocations().toString());
 	}
 }

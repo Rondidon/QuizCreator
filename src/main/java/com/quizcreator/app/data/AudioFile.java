@@ -3,6 +3,7 @@ package com.quizcreator.app.data;
 import java.io.File;
 import java.util.UUID;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -24,7 +25,7 @@ public class AudioFile {
 	public AudioFile(String location) {
 		this.id = UUID.randomUUID();
 		setLocation(location);
-		if(Program.DEBUG) System.out.println("New Audio File registered: " + getLocation());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New Audio File registered: " + getLocation());
 	}
 	
 	/**
@@ -35,7 +36,7 @@ public class AudioFile {
 	public AudioFile(final String location, final UUID id) {
 		setId(id);
 		setLocation(location);
-		if (Program.DEBUG) System.out.println("New Audio File registered: Location: " + getLocation() + ", id: " + getId());
+		if (QuizCreatorApplication.DEBUG) System.out.println("New Audio File registered: Location: " + getLocation() + ", id: " + getId());
 	}
 	
 	public UUID getId() {

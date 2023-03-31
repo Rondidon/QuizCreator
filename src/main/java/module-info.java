@@ -6,6 +6,7 @@ module com.quizcreator.app {
     requires com.dlsc.formsfx;
     requires javafx.media;
     requires org.jdom2;
+    requires org.jetbrains.annotations;
 
     opens com.quizcreator.app to javafx.fxml;
     opens com.quizcreator.app.userinterface to javafx.fxml;

@@ -1,5 +1,6 @@
 package com.quizcreator.app.test;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.data.*;
 import com.quizcreator.app.ie.*;
 
@@ -19,8 +20,8 @@ public class TestExporter extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Project setup
-		Program.setupProgram();
-		Project project = Program.getProject();
+		QuizCreatorApplication.setupProgram();
+		Project project = QuizCreatorApplication.getProject();
 		project.setTitle("TestProjekt");
 		project.setAuthor("Robin Kindler");
 //		Importer importer = new Importer();

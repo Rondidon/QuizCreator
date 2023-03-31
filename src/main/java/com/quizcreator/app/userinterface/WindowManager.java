@@ -5,17 +5,11 @@
 
 package com.quizcreator.app.userinterface;
 
-import com.quizcreator.app.data.Program;
-import com.quizcreator.app.ie.Exporter;
-import com.quizcreator.app.ie.Importer;
-import com.quizcreator.app.ie.IncompatibleVersionException;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.Effect;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class WindowManager {
 	
@@ -107,32 +101,4 @@ public class WindowManager {
 	public static void setNullEffect(String key) {
 		getStage(key).getScene().getRoot().setEffect(null);
 	}
-	
-	/**
-	 * Opens the Welcome Screen
-	 * @param programReset TRUE if the Program data (Quiz data etc) shall be reset. Useful after close project or at first start
-	 */
-	public static void openWelcomeStage(Stage stage, Boolean programReset) {
-		SceneWelcome ws = new SceneWelcome();
-		Importer i = new Importer();
-		try {
-			i.loadProgramSettings();
-		} catch (IncompatibleVersionException e) {
-			if(System.getProperty("user.language").equals("de")) {
-				Locale.setDefault(Locale.GERMAN);
-			}
-			else {
-				Locale.setDefault(Locale.ENGLISH);
-			}
-			Exporter exporter = new Exporter();
-			exporter.saveProgramSettings();
-		}
-		stage.setScene(ws.getScene(programReset));
-		ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
-		stage.setTitle(bundle.getString("title_welcome"));
-		stage.setResizable(false);
-		stage.show();
-		System.out.println(Program.getProjectLocations().toString());
-	}
-	
 }

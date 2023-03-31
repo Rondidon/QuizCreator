@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -34,7 +35,7 @@ public class Importer {
 	 */
 	public void loadProject(String location) throws IncompatibleVersionException {
 		
-		if(Program.DEBUG) System.out.println("----------\nLoading project: " + location + "\n----------");
+		if(QuizCreatorApplication.DEBUG) System.out.println("----------\nLoading project: " + location + "\n----------");
 		// get working folder
 		String workFolder = FolderFinder.getWorkFolderLocation();
 		// Clean up working folder and make new project
@@ -48,7 +49,7 @@ public class Importer {
 		try {
 			// XML to Java-readable Document by JDom SAXBuilder
 			Document doc = builder.build(xmlFile);
-			if(Program.DEBUG) System.out.println("project.xml successfully opened. Now reading content:");
+			if(QuizCreatorApplication.DEBUG) System.out.println("project.xml successfully opened. Now reading content:");
 			// Get the root element
 			Element root = doc.getRootElement();
 			
@@ -73,14 +74,14 @@ public class Importer {
 			importEventList(root, project);
 			
 			project.setProjectLocation(location);
-			Program.setProject(project);
+			QuizCreatorApplication.setProject(project);
 			
 			// add project to last edited projects list
-			Program.getProjectLocations().put(location, project.getTitle());
+			QuizCreatorApplication.getProjectLocations().put(location, project.getTitle());
 			Exporter exporter = new Exporter();
 			exporter.saveProgramSettings();
 			
-			if(Program.DEBUG) System.out.println("----------\nProject loaded successfully :-)\n----------");
+			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nProject loaded successfully :-)\n----------");
 			
 		} catch (IOException io) {
 			System.out.println("----------\nCrash in loadProject IOException :-(\n----------" + io.getMessage());
@@ -90,11 +91,11 @@ public class Importer {
 	}
 	
 	private void checkProgramVersion(Element root) throws IncompatibleVersionException {
-		if(!root.getAttributeValue("programVersion").equals(Program.getVersion())) {
+		if(!root.getAttributeValue("programVersion").equals(QuizCreatorApplication.getVersion())) {
 			System.out.println("Program version check unsuccessful!\nThe loaded file has been made or edited with another Version of Easy Quiz Creator!");
 			//throw new IncompatibleVersionException();
 		}
-		if(Program.DEBUG) System.out.println("Program version check successful...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Program version check successful...");
 	}
 	
 	private void importProjectData(Element root, Project project) {
@@ -110,7 +111,7 @@ public class Importer {
 				a.setPlaybackMode(AudioFilePlaybackMode.valueOf(e.getAttributeValue("type")));
 				a.setVolume(Double.parseDouble(e.getAttributeValue("volume")));
 				project.addToAudioResourceList(a);
-				if(Program.DEBUG) System.out.println("AudioFile imported: " + a.getDescription());
+				if(QuizCreatorApplication.DEBUG) System.out.println("AudioFile imported: " + a.getDescription());
 			}
 		}
 		// Image Resource List
@@ -121,10 +122,10 @@ public class Importer {
 				ImageFile i = new ImageFile(FolderFinder.getWorkFolderLocation().concat(e.getAttributeValue("location")), id);
 				i.setDescription(e.getAttributeValue("description"));
 				project.addToImageResourceList(i);
-				if(Program.DEBUG) System.out.println("ImageFile imported: " +  i.getDescription());
+				if(QuizCreatorApplication.DEBUG) System.out.println("ImageFile imported: " +  i.getDescription());
 			}
 		}
-		if(Program.DEBUG) System.out.println("Project data successfully loaded...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Project data successfully loaded...");
 	}
 	
 	private void importQuizDesign(Element root, Project project) {
@@ -254,7 +255,7 @@ public class Importer {
 			// startScreenFont
 			if(e.getChild("startScreenFont") != null) {
 				String name = e.getChild("startScreenFont").getAttributeValue("name");
-				if(Program.DEBUG) System.out.println(name);
+				if(QuizCreatorApplication.DEBUG) System.out.println(name);
 				double size;
 				try {
 					size = Double.parseDouble(e.getChild("startScreenFont").getAttributeValue("size")); 
@@ -266,7 +267,7 @@ public class Importer {
 				qd.setStartScreenFont(f);
 			}
 			project.getQuiz().setQuizDesign(qd);
-			if(Program.DEBUG) System.out.println("Quiz design successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Quiz design successfully loaded...");
 		}
 	}
 	
@@ -326,7 +327,7 @@ public class Importer {
 			catch (Exception ex) { }
 			
 			project.getQuiz().setSoundSettings(ss);
-			if(Program.DEBUG) System.out.println("Sound settings successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Sound settings successfully loaded...");
 		}
 	}
 	
@@ -341,7 +342,7 @@ public class Importer {
 				project.getQuiz().getCountdown().setModeUpwards(Boolean.parseBoolean(e.getAttributeValue("modeUpwards")));
 			}
 			catch (Exception ex) { System.out.println("ERROR: parseBoolean failed in importCountdown!"); }
-			if(Program.DEBUG) System.out.println("Timer data successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Timer data successfully loaded...");
 		}
 	}
 	
@@ -431,7 +432,7 @@ public class Importer {
 				} catch (Exception ex) { System.out.println("ERROR: parseInt failed in importGameMode - feedbackMode!"); }
 				project.getQuiz().setGameMode(gmm);
 			}
-			if(Program.DEBUG) System.out.println("GameMode data successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("GameMode data successfully loaded...");
 		}
 		else {
 			System.out.println("ERROR: No GameMode data in the XML file! Trying to continue...");
@@ -441,7 +442,7 @@ public class Importer {
 	private void importQuiz(Element root, Project project) {
 		try {
 			project.getQuiz().setMultiplayerMode(Integer.parseInt(root.getChild("Quiz").getAttributeValue("multiplayerMode")));
-			if(Program.DEBUG) System.out.println("Quiz multiplayer attributes successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Quiz multiplayer attributes successfully loaded...");
 		} catch (Exception ex) { System.out.println("ERROR: parseInt failed in importQuiz - multiplayerMode!"); }
 	}
 	
@@ -476,7 +477,7 @@ public class Importer {
 					project.getQuiz().addToEventList(qc);
 				}
 			}
-			if(Program.DEBUG) System.out.println("EventList data successfully loaded...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("EventList data successfully loaded...");
 		} catch (Exception e) { System.out.println("ERROR: No eventList found in the project.xml -> Exception in importEventList!"); }
 		
 		
@@ -497,19 +498,19 @@ public class Importer {
 			try {
 				final var imageId = UUID.fromString(q.getAttributeValue("id"));
 				question.setImage(project.getImageFileFromImageResourceList(imageId));
-			} catch (Exception e) { if(Program.DEBUG) System.out.println("DEBUG (no error): Question image is null in importQuestionList");}
+			} catch (Exception e) { if(QuizCreatorApplication.DEBUG) System.out.println("DEBUG (no error): Question image is null in importQuestionList");}
 			try {
 				final var audioId = UUID.fromString(q.getAttributeValue("audioAutomatic"));
 				question.setAudioAutomatic(project.getAudioFileFromAudioResourceList(audioId));
-			} catch (Exception e) { if(Program.DEBUG) System.out.println("DEBUG (no error): Audio is null in importQuestionList");}
+			} catch (Exception e) { if(QuizCreatorApplication.DEBUG) System.out.println("DEBUG (no error): Audio is null in importQuestionList");}
 			try {
 				final var audioId = UUID.fromString(q.getAttributeValue("audioManual"));
 				question.setAudioManual(project.getAudioFileFromAudioResourceList(audioId));
-			} catch (Exception e) { if(Program.DEBUG) System.out.println("DEBUG (no error): Audio is null in importQuestionList");}
+			} catch (Exception e) { if(QuizCreatorApplication.DEBUG) System.out.println("DEBUG (no error): Audio is null in importQuestionList");}
 			try {
 				final var audioId = UUID.fromString(q.getAttributeValue("music"));
 				question.setMusic(project.getAudioFileFromAudioResourceList(audioId));
-			} catch (Exception e) { if(Program.DEBUG) System.out.println("DEBUG (no error): Music is null in importQuestionList");}
+			} catch (Exception e) { if(QuizCreatorApplication.DEBUG) System.out.println("DEBUG (no error): Music is null in importQuestionList");}
 			// define options
 			question.setUseTipJoker(Boolean.parseBoolean(q.getAttributeValue("useTipJoker")));
 			question.setUseChangeJoker(Boolean.parseBoolean(q.getAttributeValue("useChangeJoker")));
@@ -526,7 +527,7 @@ public class Importer {
 			questionList.add(question);
 			}
 		// return the question list
-		if(Program.DEBUG) System.out.println("QuestionList data successfully loaded...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("QuestionList data successfully loaded...");
 		return questionList;
 	}
 	
@@ -575,7 +576,7 @@ public class Importer {
 			else {
 				throw new Exception("Image file import: Type not supported. Only *.jpg, *.png, *.gif.");
 			}
-			if(Program.DEBUG) System.out.println("Target Folder: " + targetFolder);
+			if(QuizCreatorApplication.DEBUG) System.out.println("Target Folder: " + targetFolder);
 			// Copy file to App`s working folder
 			Path from = Paths.get(srcLocation);
 			Path to = Paths.get(targetFolder);
@@ -628,7 +629,7 @@ public class Importer {
 			else {
 				throw new Exception("Audio file import: Type not supported. Ony WAF / AIF / MP3 / AIFF.");
 			}
-			if(Program.DEBUG) System.out.println("Target Folder: " + targetFolder);
+			if(QuizCreatorApplication.DEBUG) System.out.println("Target Folder: " + targetFolder);
 			// Copy file to App Temp Data Folder
 			Path from = Paths.get(srcLocation);
 			Path to = Paths.get(targetFolder);
@@ -670,7 +671,7 @@ public class Importer {
 		try {
 			// XML to Java-readable Document by JDom SAXBuilder
 			Document doc = builder.build(xmlFile);
-			if(Program.DEBUG) System.out.println("settings.xml successfully opened. Now reading content...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("settings.xml successfully opened. Now reading content...");
 			// Get the root element
 			Element root = doc.getRootElement();
 			
@@ -695,9 +696,9 @@ public class Importer {
 					projectlocations.put(e.getAttributeValue("location"), e.getAttributeValue("name"));
 				}
 			}
-			Program.setProjectLocations(projectlocations);
+			QuizCreatorApplication.setProjectLocations(projectlocations);
 			
-			if(Program.DEBUG) System.out.println("----------\nSettings loaded successfully :-)\n----------");
+			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nSettings loaded successfully :-)\n----------");
 			
 		} catch (IOException io) {
 			//System.out.println("----------\nCrash in loadProgramSettings IOException :-(\n----------" + io.getMessage());

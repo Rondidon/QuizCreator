@@ -2,6 +2,7 @@ package com.quizcreator.app.data;
 
 import java.util.*;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -43,7 +44,7 @@ public class Question {
 		setMusic(null);
 		this.answerAmount.set(0);
 		answerList = new ArrayList<Answer>();
-		if(Program.DEBUG) System.out.println("New Question registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New Question registered: Id: " + getId());
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class Question {
 		setMusic(null);
 		this.answerAmount.set(0);
 		answerList = new ArrayList<Answer>();
-		if(Program.DEBUG) System.out.println("New Question registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New Question registered: Id: " + getId());
 	}
 	
 	public UUID getId() {
@@ -159,7 +160,7 @@ public class Question {
 	
 	public void refreshAnswerAmount() {
 		this.answerAmount.set(getAnswerList().size());
-		if(Program.DEBUG) System.out.println("Refreshing answer amount of " + this.getText() + ": " + getAnswerList().size() + " = " + this.answerAmount.get());
+		if(QuizCreatorApplication.DEBUG) System.out.println("Refreshing answer amount of " + this.getText() + ": " + getAnswerList().size() + " = " + this.answerAmount.get());
 	}
 	
 	private void refreshQuestionTypeAsString() {

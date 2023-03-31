@@ -1,5 +1,7 @@
 package com.quizcreator.app.data;
 
+import com.quizcreator.app.QuizCreatorApplication;
+
 import java.io.File;
 import java.util.UUID;
 
@@ -17,7 +19,7 @@ public class ImageFile {
 	public ImageFile(String srcLocation) {
 		this.id = UUID.randomUUID();
 		setLocation(srcLocation);
-		if(Program.DEBUG) System.out.println("New image file registered: Location: " + getLocation() + ", id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New image file registered: Location: " + getLocation() + ", id: " + getId());
 	}
 	
 	/**
@@ -28,7 +30,7 @@ public class ImageFile {
 	public ImageFile(final String srcLocation, final UUID id) {
 		setId(id);
 		setLocation(srcLocation);
-		if(Program.DEBUG) System.out.println("New image file registered: Location: " + getLocation() + ", id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New image file registered: Location: " + getLocation() + ", id: " + getId());
 	}
 	
 	public UUID getId() {

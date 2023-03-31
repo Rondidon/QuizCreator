@@ -1,7 +1,7 @@
 package com.quizcreator.app.userinterface;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.data.Answer;
-import com.quizcreator.app.data.Program;
 import com.quizcreator.app.data.Question;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -160,7 +160,7 @@ public class SceneAddQuestion {
 		delete.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if(Program.DEBUG) {
+				if(QuizCreatorApplication.DEBUG) {
 					System.out.println("Removed: " + a.getText() + a.toString());
 				}
 				newAnswerList.remove(a);
@@ -179,7 +179,7 @@ public class SceneAddQuestion {
 				int swapPosition;
 				if(indexOfUpButton == 0) swapPosition = workingCollection.size() - 1;
 				else swapPosition = workingCollection.indexOf(up.getParent()) - 1;
-				if(Program.DEBUG) {
+				if(QuizCreatorApplication.DEBUG) {
 					System.out.println("Entry pos: " + indexOfUpButton);
 					System.out.println("Swap pos: " + swapPosition);
 				}
@@ -199,7 +199,7 @@ public class SceneAddQuestion {
 				int swapPosition;
 				if(indexOfDownButton == workingCollection.size() - 1) swapPosition = 0;
 				else swapPosition = workingCollection.indexOf(down.getParent()) + 1;
-				if(Program.DEBUG) {
+				if(QuizCreatorApplication.DEBUG) {
 					System.out.println("Entry pos: " + indexOfDownButton);
 					System.out.println("Swap pos: " + swapPosition);
 				}
@@ -363,7 +363,7 @@ public class SceneAddQuestion {
 		}
 		// set Answers
 		
-		if(Program.DEBUG) {
+		if(QuizCreatorApplication.DEBUG) {
 			System.out.println("Answers in createQuestionAction..: ");
 			for(Answer a : newAnswerList) {
 				System.out.println(a.getText());
@@ -377,8 +377,6 @@ public class SceneAddQuestion {
 		
 		WindowManager.setNullEffect("editorStage");
 		WindowManager.closeStage("addQuestionStage");
-		
-		
 	}
 	
 	/**

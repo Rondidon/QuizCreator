@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import org.jdom2.*;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -24,7 +25,7 @@ public class Exporter {
 	 */
 	public void saveProject(Project project, String location) {
 		
-		if(Program.DEBUG) System.out.println("----------\nSaving project to: " + location + "\n----------");
+		if(QuizCreatorApplication.DEBUG) System.out.println("----------\nSaving project to: " + location + "\n----------");
 		Document doc = new Document();
 		
 		// Create the XML document
@@ -62,12 +63,12 @@ public class Exporter {
 				f.mkdirs();
 			}
 			
-			if(Program.DEBUG) {
+			if(QuizCreatorApplication.DEBUG) {
 				System.out.println("XML Outputter Location: " + xmlLocation);
 				System.out.println("Project QGM-File Location: " + location);
 			}
-			
-			Program.getProjectLocations().put(location, project.getTitle());
+
+			QuizCreatorApplication.getProjectLocations().put(location, project.getTitle());
 			saveProgramSettings();
 			
 			// oben aufgebautes doc-Dokument als XML Datei an der xmlLocation speichern 
@@ -79,7 +80,7 @@ public class Exporter {
 	        ZipUtilities.folderToZIP(workFolder, location, workFolder, true);
 			// Project location refreshen. QGM Datei ist jetzt wo anders.
 			project.setProjectLocation(location);
-			if(Program.DEBUG) System.out.println("----------\nThe project has been saved successfully :-)\n----------");
+			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nThe project has been saved successfully :-)\n----------");
 		} catch (IOException e) {
 			System.out.println("----------\nAn error occurred while saving the project :-(\n----------");
 			e.printStackTrace();
@@ -95,8 +96,8 @@ public class Exporter {
 	 * @param root
 	 */
 	private void exportProgramData(Element root) {
-		root.setAttribute("programVersion", Program.getVersion());
-		if(Program.DEBUG) System.out.println("Program data successfully saved...");
+		root.setAttribute("programVersion", QuizCreatorApplication.getVersion());
+		if(QuizCreatorApplication.DEBUG) System.out.println("Program data successfully saved...");
 	}
 	
 	/**
@@ -134,7 +135,7 @@ public class Exporter {
 
 		root.addContent(audioResList);
 		root.addContent(imageResList);
-		if(Program.DEBUG) System.out.println("Project data successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Project data successfully saved...");
 	}
 	
 	/**
@@ -224,7 +225,7 @@ public class Exporter {
 		quizDesign.addContent(startScreenFont);
 		
 		root.addContent(quizDesign);
-		if(Program.DEBUG) System.out.println("Quiz design successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Quiz design successfully saved...");
 	}
 	
 	/**
@@ -277,7 +278,7 @@ public class Exporter {
 			soundSettings.setAttribute("backgroundMusic","null");
 		}
 		root.addContent(soundSettings);
-		if(Program.DEBUG) System.out.println("Sound settings successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Sound settings successfully saved...");
 	}
 	
 	/**
@@ -289,7 +290,7 @@ public class Exporter {
 		timer.setAttribute("timeInSeconds", Float.toString(project.getQuiz().getCountdown().getTimeInSeconds()));
 		timer.setAttribute("modeUpwards", Boolean.toString(project.getQuiz().getCountdown().isModeUpwards()));
 		root.addContent(timer);
-		if(Program.DEBUG) System.out.println("Timer data successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Timer data successfully saved...");
 	}
 	
 	/**
@@ -325,7 +326,7 @@ public class Exporter {
 			gameMode.setAttribute("timeAtStart", Integer.toString(gmt.getTimeAtStart()));
 		}
 		root.addContent(gameMode);
-		if(Program.DEBUG) System.out.println("Game mode successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Game mode successfully saved...");
 	}
 	
 	/**
@@ -375,7 +376,7 @@ public class Exporter {
 			}
 		}
 		root.addContent(eventList);
-		if(Program.DEBUG) System.out.println("Event list data successfully saved...");
+		if(QuizCreatorApplication.DEBUG) System.out.println("Event list data successfully saved...");
 	}
 	
 	/**
@@ -399,7 +400,7 @@ public class Exporter {
 			
 			question.setAttribute("id",q.getId().toString());
 			question.setAttribute("text",q.getText());
-			if(Program.DEBUG) System.out.println("Saving question: " + q.getText());
+			if(QuizCreatorApplication.DEBUG) System.out.println("Saving question: " + q.getText());
 			if(q.getImage() != null) {
 				question.setAttribute("image",q.getImage().getId().toString());
 			}
@@ -430,7 +431,7 @@ public class Exporter {
 
 			exportAnswerList(question,q);
 			questionContainer.addContent(question);
-			if(Program.DEBUG) System.out.println("Question list successfully saved...");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Question list successfully saved...");
 		}
 	}
 	
@@ -446,7 +447,7 @@ public class Exporter {
 			answer.setAttribute("text",a.getText());
 			answer.setAttribute("correct",Boolean.toString(a.isCorrect()));		
 			question.addContent(answer);
-			if(Program.DEBUG) System.out.println("Saving answer: " + a.getText());
+			if(QuizCreatorApplication.DEBUG) System.out.println("Saving answer: " + a.getText());
 		}
 	}
 	
@@ -458,34 +459,34 @@ public class Exporter {
 		String appDataFolder = FolderFinder.getAppDataFolderLocation();
 		// Ort der XML Projekt-Datei
 		String xmlLocation = appDataFolder.concat("/settings.xml");
-		if(Program.DEBUG) System.out.println("----------\nSaving program settings to: " + xmlLocation + "\n----------");
+		if(QuizCreatorApplication.DEBUG) System.out.println("----------\nSaving program settings to: " + xmlLocation + "\n----------");
 		
 		Document doc = new Document();
 		
 		// Create the XML document
 		Element root = new Element("QuizGameMaker");
 		
-		root.setAttribute("programVersion", Program.getVersion());
-		if(Program.DEBUG) System.out.println("programVersion = " + Program.getVersion());
+		root.setAttribute("programVersion", QuizCreatorApplication.getVersion());
+		if(QuizCreatorApplication.DEBUG) System.out.println("programVersion = " + QuizCreatorApplication.getVersion());
 
 		Element settings = new Element("settings");
 		
 		if(Locale.getDefault() == Locale.GERMAN) {
 			settings.setAttribute("language","GERMAN");
-			if(Program.DEBUG) System.out.println("language = GERMAN");
+			if(QuizCreatorApplication.DEBUG) System.out.println("language = GERMAN");
 		}
 		else {
 			settings.setAttribute("language","ENGLISH");
-			if(Program.DEBUG) System.out.println("language = ENGLISH");
+			if(QuizCreatorApplication.DEBUG) System.out.println("language = ENGLISH");
 		}
 		
 		root.addContent(settings);
 		
 		Element projectlocations = new Element("projectlocations");
-		String[] a = Program.getProjectLocations().keySet().toArray(new String[Program.getProjectLocations().keySet().size()]);
+		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
 		for(int i=0; i<a.length; i++) {
 			Element project = new Element("project");
-			project.setAttribute(new Attribute("name", Program.getProjectLocations().get(a[i])));
+			project.setAttribute(new Attribute("name", QuizCreatorApplication.getProjectLocations().get(a[i])));
 			project.setAttribute("location",a[i]);
 			projectlocations.addContent(project);
 		}
@@ -508,7 +509,7 @@ public class Exporter {
 			outputter.output(doc, xmloutput);
 			xmloutput.close();
 			
-			if(Program.DEBUG) System.out.println("----------\nThe program settings file has been saved successfully :-)\n----------");
+			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nThe program settings file has been saved successfully :-)\n----------");
 		} catch (IOException e) {
 			System.out.println("----------\nAn error occurred while saving the program settings file :-(\n----------");
 			e.printStackTrace();

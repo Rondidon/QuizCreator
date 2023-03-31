@@ -1,16 +1,15 @@
 package com.quizcreator.app.userinterface;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.quizcreator.app.data.Program;
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.data.Question;
 import com.quizcreator.app.data.QuestionContainer;
+import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -35,7 +34,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -47,6 +45,13 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
 public class PaneCreateQuestionPacks implements Initializable {
+
+	private final ImageLoader imageLoader;
+
+	public PaneCreateQuestionPacks() {
+		this.imageLoader = new ImageLoader();
+	}
+
 	private ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
 	private static QuestionContainer selectedQC = null;
 	
@@ -156,7 +161,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 					buttonCreate.setDisable(true);
 					textField.setText(checkRegex(newValue));
-					if(textField.getText().length() > 0 && !Program.getProject().getQuiz().checkIfQuestionContainerExists(textField.getText())) {
+					if(textField.getText().length() > 0 && !QuizCreatorApplication.getProject().getQuiz().checkIfQuestionContainerExists(textField.getText())) {
 						buttonCreate.setDisable(false);
 					}
 				}
@@ -209,7 +214,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 					buttonCreate.setDisable(true);
 					textField.setText(checkRegex(newValue));
-					if(textField.getText().length() > 0 && !Program.getProject().getQuiz().checkIfQuestionContainerExists(textField.getText()) 
+					if(textField.getText().length() > 0 && !QuizCreatorApplication.getProject().getQuiz().checkIfQuestionContainerExists(textField.getText())
 							|| textField.getText().equals(qc.getDescription())) {
 						buttonCreate.setDisable(false);
 					}
@@ -256,7 +261,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 		QuestionContainer qc = new QuestionContainer();
 		qc.setDescription(textField.getText());
 		qc.setAddedToQuiz(false);
-		Program.getProject().getQuiz().addToEventList(qc);
+		QuizCreatorApplication.getProject().getQuiz().addToEventList(qc);
 		refreshQCTable();
 		WindowManager.setNullEffect("editorStage");
 		WindowManager.closeStage("addQuestionPackStage");
@@ -302,8 +307,8 @@ public class PaneCreateQuestionPacks implements Initializable {
 		alert.getButtonTypes().setAll(buttonTypeRemove, buttonTypeCancel);
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == buttonTypeRemove) {
-        	tableViewQuestionPack.getItems().remove(qc);  
-        	Program.getProject().getQuiz().removeFromEventList(qc);
+        	tableViewQuestionPack.getItems().remove(qc);
+			QuizCreatorApplication.getProject().getQuiz().removeFromEventList(qc);
 		}
 		WindowManager.setNullEffect("editorStage");
 	}
@@ -429,7 +434,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 	 * Refreshes the question container table
 	 */
 	private void refreshQCTable() {
-		ObservableList<QuestionContainer> data = FXCollections.observableArrayList(Program.getProject().getQuiz().getQuestionContainerList());
+		ObservableList<QuestionContainer> data = FXCollections.observableArrayList(QuizCreatorApplication.getProject().getQuiz().getQuestionContainerList());
 		if(data.size() > 0) {
 			tableViewQuestionPack.setItems(data);
 			
@@ -437,7 +442,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 			tableViewQuestionPack.prefHeightProperty().bind(Bindings.size(tableViewQuestionPack.getItems()).multiply(tableViewQuestionPack.getFixedCellSize()).add(30));
 			
 	        columnDescription.setCellValueFactory(new PropertyValueFactory<QuestionContainer, String>("description"));
-	        Program.getProject().getQuiz().updateQuestionAmount();
+			QuizCreatorApplication.getProject().getQuiz().updateQuestionAmount();
 	        columnQuestionAmount.setCellValueFactory(new PropertyValueFactory<QuestionContainer, Integer>("questionAmount"));
 	        
 	        tableViewQuestionPack.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -513,7 +518,7 @@ public class PaneCreateQuestionPacks implements Initializable {
 	            }  
 	        }); 
 		}
-		if(Program.DEBUG) System.out.println("Refreshed QC table: " + data);
+		if(QuizCreatorApplication.DEBUG) System.out.println("Refreshed QC table: " + data);
 	}
 	
 	/**
@@ -547,16 +552,11 @@ public class PaneCreateQuestionPacks implements Initializable {
 			);
 			loader.setController(this);
 			Scene scene = new Scene(loader.load());
-			
-			try {
-				Image iconAdd = new Image(new FileInputStream("res/img/icon_add.png"));
-				imageViewAddQuestion.setImage(iconAdd);
-				imageViewAddQuestionPack.setImage(iconAdd);
-			} catch (FileNotFoundException f) {
-				System.out.println("Could not load image: res/img/icon_add.png");
-			}
 
-			
+			final var icon = imageLoader.load("icon_add.png");
+			imageViewAddQuestion.setImage(icon);
+			imageViewAddQuestionPack.setImage(icon);
+
 			questionPane.setVisible(false);
 			tableViewQuestionPack.getSelectionModel().clearSelection();
 			

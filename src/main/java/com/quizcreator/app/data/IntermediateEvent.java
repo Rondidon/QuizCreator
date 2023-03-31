@@ -1,5 +1,7 @@
 package com.quizcreator.app.data;
 
+import com.quizcreator.app.QuizCreatorApplication;
+
 import java.util.UUID;
 
 public class IntermediateEvent extends Event {
@@ -13,7 +15,7 @@ public class IntermediateEvent extends Event {
 	 */
 	public IntermediateEvent() {
 		super();
-		if(Program.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New QuestionContainer registered: Id: " + getId());
 	}
 	
 	/**
@@ -23,7 +25,7 @@ public class IntermediateEvent extends Event {
 	public IntermediateEvent(final UUID id) {
 		super(id);
 		setText("");
-		if(Program.DEBUG) System.out.println("New IntermediateEvent registered: Id: " + getId());
+		if(QuizCreatorApplication.DEBUG) System.out.println("New IntermediateEvent registered: Id: " + getId());
 	}
 	
 	public IntermediateEventType getType() {

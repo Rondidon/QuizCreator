@@ -1,6 +1,8 @@
 package com.quizcreator.app.userinterface;
 
+import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.data.*;
+import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,6 +28,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SceneNewProject implements Initializable {
+	private final ImageLoader imageLoader;
+
+	public SceneNewProject(final ImageLoader imageLoader) {
+		this.imageLoader = imageLoader;
+	}
+
 	private ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
 	private Scene scene;
 	
@@ -46,13 +54,13 @@ public class SceneNewProject implements Initializable {
 	@FXML
 	protected void handleButtonAction(ActionEvent e) {
 		if(e.getSource() == buttonBack) {
-			if(Program.DEBUG) System.out.println("Back");
+			if(QuizCreatorApplication.DEBUG) System.out.println("Back");
 			closeStage();
 		}
 		if(e.getSource() == buttonCreate) {
-			if(Program.DEBUG) System.out.println("Create");
-			Program.getProject().setTitle(textfieldTitle.getText());
-			Program.getProject().setAuthor(textfieldAuthor.getText());
+			if(QuizCreatorApplication.DEBUG) System.out.println("Create");
+			QuizCreatorApplication.getProject().setTitle(textfieldTitle.getText());
+			QuizCreatorApplication.getProject().setAuthor(textfieldAuthor.getText());
 			Quiz quiz = new Quiz();
 			switch (choiceboxGameMode.getSelectionModel().getSelectedIndex()) {
 			case 0:
@@ -72,9 +80,9 @@ public class SceneNewProject implements Initializable {
 			WindowManager.closeStage("welcomeStage");
 			Stage editorStage = new Stage();
 			WindowManager.addStage(editorStage, "editorStage");
-			SceneEditor editorScene = new SceneEditor();
+			SceneEditor editorScene = new SceneEditor(imageLoader);
 			editorStage.setScene(editorScene.getScene());
-			editorStage.setTitle(Program.getProject().getTitle().concat(" - " + bundle.getString("title_software")));
+			editorStage.setTitle(QuizCreatorApplication.getProject().getTitle().concat(" - " + bundle.getString("title_software")));
 			editorStage.centerOnScreen();
 			editorStage.show();
 		}
