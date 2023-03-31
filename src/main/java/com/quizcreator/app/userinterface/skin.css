@@ -1,0 +1,11 @@
+#color-header {
+  -fx-background-color: #87CEFA;
+}
+
+#color-footer {
+  -fx-background-color: #d3d3d3;
+}
+
+#color-highlight {
+  -fx-background-color: #e6e6e6;
+}

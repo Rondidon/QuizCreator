@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ResourceBundleManager">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/i18n/LanguageBundle.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/i18n/LanguageBundle_de.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/locales/LanguageBundle.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/locales/LanguageBundle_de.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/com.quizcreator.i18n/bundle.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/com.quizcreator.i18n/bundle_de.properties" />
+    <custom-resource-bundle>
+      <file value="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/locales/LanguageBundle.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/java/com/quizcreator/app/app/app/app/locales/LanguageBundle_de.properties" />
+      <base-name>LanguageBundle</base-name>
+    </custom-resource-bundle>
+  </component>
+</project>
