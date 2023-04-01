@@ -4,6 +4,8 @@ import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.ie.Exporter;
 import com.quizcreator.app.ie.Importer;
 import com.quizcreator.app.ie.IncompatibleVersionException;
+import com.quizcreator.app.services.projectLocation.ProjectLocationService;
+import com.quizcreator.app.tools.FolderTools;
 import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -23,8 +24,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -33,9 +32,13 @@ import java.util.ResourceBundle;
 public class SceneEditor implements Initializable {
 
 	private final ImageLoader imageLoader;
+	private final ProjectLocationService projectLocationService;
+	private final FolderTools folderTools;
 
-	public SceneEditor(final ImageLoader imageLoader) {
+	public SceneEditor(final ImageLoader imageLoader, final ProjectLocationService projectLocationService, final FolderTools folderTools) {
 		this.imageLoader = imageLoader;
+		this.projectLocationService = projectLocationService;
+		this.folderTools = folderTools;
 	}
 
 	@Override
@@ -102,13 +105,14 @@ public class SceneEditor implements Initializable {
 		tabManageMedia.setContent(new PaneManageMedia().getPane());
 		
 		menuLastEdited.getItems().clear();
+
+		final var projectLocations = projectLocationService.loadProjectLocationsFromDisk();
 		
 		// last edited projects
-		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
-		for(int i=0; i<a.length; i++) {
+		String[] locations = projectLocations.keySet().toArray(new String[0]);
+		for (String location : locations) {
 			MenuItem item = new MenuItem();
-			String location = a[i];
-			item.setText(QuizCreatorApplication.getProjectLocations().get(a[i]) + "\n(" + location + ")");
+			item.setText(projectLocations.get(location) + "\n(" + location + ")");
 			item.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
@@ -118,16 +122,14 @@ public class SceneEditor implements Initializable {
 			menuLastEdited.getItems().add(item);
 		}
 		
-		if(QuizCreatorApplication.getProjectLocations().size() > 0) {
+		if(projectLocations.size() > 0) {
 			menuLastEdited.setVisible(true);
 			MenuItem menuitemClear = new MenuItem();
 			menuitemClear.setText(bundle.getString("menubar_clearlist"));
 			menuitemClear.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					QuizCreatorApplication.getProjectLocations().clear();
-					Exporter e = new Exporter();
-					e.saveProgramSettings();
+					projectLocationService.clearProjectLocationsOnDisk();
 					refreshScene();
 				}
 			});
@@ -199,7 +201,7 @@ public class SceneEditor implements Initializable {
 				File selectedFile = fileChooser.showOpenDialog(WindowManager.getStage("editorStage"));
 					if(selectedFile != null) {
 						String location = selectedFile.toString();
-						Importer i = new Importer();
+						Importer i = new Importer(folderTools, projectLocationService);
 						try {
 							i.loadProject(location);
 							refreshScene();
@@ -241,7 +243,7 @@ public class SceneEditor implements Initializable {
 			root.setEffect(null);
 			return;
 		}
-		Importer i = new Importer();
+		Importer i = new Importer(folderTools, projectLocationService);
 		try {
 			i.loadProject(location);
 			refreshScene();
@@ -275,7 +277,7 @@ public class SceneEditor implements Initializable {
 					Exporter exporter = new Exporter();
 					exporter.saveProject(QuizCreatorApplication.getProject(), location);
 					QuizCreatorApplication.getProject().setProjectLocation(location);
-					QuizCreatorApplication.getProjectLocations().put( location, QuizCreatorApplication.getProject().getTitle());
+					projectLocationService.addAndSaveOnDisk(location, QuizCreatorApplication.getProject().getTitle());
 					refreshScene();
 				}
 				root.setEffect(null);
@@ -296,7 +298,7 @@ public class SceneEditor implements Initializable {
 			Exporter exporter = new Exporter();
 			exporter.saveProject(QuizCreatorApplication.getProject(), location);
 			QuizCreatorApplication.getProject().setProjectLocation(location);
-			QuizCreatorApplication.getProjectLocations().put( location, QuizCreatorApplication.getProject().getTitle());
+			projectLocationService.addAndSaveOnDisk(location, QuizCreatorApplication.getProject().getTitle());
 		}
 	}
 	
@@ -320,12 +322,14 @@ public class SceneEditor implements Initializable {
 			WindowManager.closeStage("editorStage");
 			Stage welcomeStage = new Stage();
 			WindowManager.addStage(welcomeStage, "welcomeStage");
-			SceneWelcome.open(welcomeStage, true);
+			// TODO SETUP CLEAN PROJECT
+			SceneWelcome.open(welcomeStage, imageLoader, projectLocationService, folderTools);
 		} else if(result.get() == buttonTypeDontSave) {
 		    WindowManager.closeStage("editorStage");
 		    Stage welcomeStage = new Stage();
 		    WindowManager.addStage(welcomeStage, "welcomeStage");
-		    SceneWelcome.open(welcomeStage, true);
+			// TODO SETUP CLEAN PROJECT
+		    SceneWelcome.open(welcomeStage, imageLoader, projectLocationService, folderTools);
 		} else {
 			root.setEffect(null);
 		}

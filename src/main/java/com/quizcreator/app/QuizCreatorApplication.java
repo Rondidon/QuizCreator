@@ -1,25 +1,37 @@
 package com.quizcreator.app;
 
 import com.quizcreator.app.data.Project;
+import com.quizcreator.app.services.projectLocation.ProjectLocationService;
+import com.quizcreator.app.services.projectLocation.ProjectLocationServiceImpl;
+import com.quizcreator.app.tools.FolderTools;
 import com.quizcreator.app.userinterface.SceneWelcome;
 import com.quizcreator.app.userinterface.WindowManager;
+import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 public class QuizCreatorApplication extends Application {
+    private static final Logger log = LogManager.getLogger(QuizCreatorApplication.class);
     private static String version = "Development 04-2023";
     private static Project project;
-    private static HashMap<String,String> projectLocations = new HashMap<String,String>();
+
     public static final boolean DEBUG = false; // Debug mode - turn on for Console outputs for debugging
+
+    private FolderTools folderTools;
+    private ProjectLocationService projectLocationService;
+    private ImageLoader imageLoader;
+
 
     /**
      * configures the program
      */
-    public static void setupProgram() {
-        if(DEBUG) System.out.println("Version: " + version + ".");
+    public void setupCleanProject() {
+        log.info("Version: " + version + ".");
+        folderTools.eraseTempFolder();
         project = new Project("");
     }
 
@@ -36,20 +48,17 @@ public class QuizCreatorApplication extends Application {
         return version;
     }
 
-    public static HashMap<String,String> getProjectLocations() {
-        return projectLocations;
-    }
-
-    public static void setProjectLocations(HashMap<String,String> projectLocations) {
-        QuizCreatorApplication.projectLocations = projectLocations;
-    }
-
     @Override
     public void start(Stage stage) throws IOException {
+        folderTools = new FolderTools();
+        projectLocationService = new ProjectLocationServiceImpl(folderTools);
+        imageLoader = new ImageLoader();
+
         stage.setResizable(false);
         stage.centerOnScreen();
         WindowManager.addStage(stage, "welcomeStage");
-        SceneWelcome.open(stage,true);
+        setupCleanProject();
+        SceneWelcome.open(stage,imageLoader, projectLocationService, folderTools);
     }
 
     public static void main(String[] args) {

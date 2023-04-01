@@ -2,6 +2,9 @@ package com.quizcreator.app.userinterface;
 
 import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.data.*;
+import com.quizcreator.app.services.projectLocation.ProjectLocationService;
+import com.quizcreator.app.services.projectLocation.ProjectLocationServiceImpl;
+import com.quizcreator.app.tools.FolderTools;
 import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,9 +32,13 @@ import java.util.ResourceBundle;
 
 public class SceneNewProject implements Initializable {
 	private final ImageLoader imageLoader;
+	private final FolderTools folderTools;
+	private final ProjectLocationService projectLocationService;
 
-	public SceneNewProject(final ImageLoader imageLoader) {
+	public SceneNewProject(final ImageLoader imageLoader, final ProjectLocationService projectLocationService, final FolderTools folderTools) {
 		this.imageLoader = imageLoader;
+		this.projectLocationService = projectLocationService;
+		this.folderTools = folderTools;
 	}
 
 	private ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
@@ -80,7 +87,7 @@ public class SceneNewProject implements Initializable {
 			WindowManager.closeStage("welcomeStage");
 			Stage editorStage = new Stage();
 			WindowManager.addStage(editorStage, "editorStage");
-			SceneEditor editorScene = new SceneEditor(imageLoader);
+			SceneEditor editorScene = new SceneEditor(imageLoader, projectLocationService, folderTools);
 			editorStage.setScene(editorScene.getScene());
 			editorStage.setTitle(QuizCreatorApplication.getProject().getTitle().concat(" - " + bundle.getString("title_software")));
 			editorStage.centerOnScreen();

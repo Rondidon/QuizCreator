@@ -8,15 +8,17 @@ import java.util.List;
 import java.util.Locale;
 
 import com.quizcreator.app.QuizCreatorApplication;
+import com.quizcreator.app.tools.FolderTools;
 import org.jdom2.*;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import com.quizcreator.app.data.*;
-import com.quizcreator.app.tools.FolderFinder;
 import com.quizcreator.app.tools.ZipUtilities;
 
 public class Exporter {
+
+	final FolderTools folderTools = new FolderTools(); // TODO UNBEDINGT DEPENDENCY INJECTION
 	
 	/**
 	 * Saves the data of a whole QuizMaker project into an xml file.
@@ -53,7 +55,7 @@ public class Exporter {
 			// Betriebssystemabhaengiger Arbeitsordner im Home-Verzeichnis, 
 			// wo in einem Unterordner die ganze Verzeichnisstruktur
 			// der spaeteren QGM Datei aufgebaut wird.
-			String workFolder = FolderFinder.getWorkFolderLocation();
+			String workFolder = folderTools.getTempFolderLocation();
 			// Ort der XML Projekt-Datei
 			String xmlLocation = workFolder.concat("/project.xml");
 			
@@ -68,7 +70,6 @@ public class Exporter {
 				System.out.println("Project QGM-File Location: " + location);
 			}
 
-			QuizCreatorApplication.getProjectLocations().put(location, project.getTitle());
 			saveProgramSettings();
 			
 			// oben aufgebautes doc-Dokument als XML Datei an der xmlLocation speichern 
@@ -456,7 +457,7 @@ public class Exporter {
 	 */
 	public void saveProgramSettings() {
 		// Betriebssystemabhaengiger App Data Ordner im Home-Verzeichnis, 
-		String appDataFolder = FolderFinder.getAppDataFolderLocation();
+		String appDataFolder = folderTools.getAppDataFolderLocation();
 		// Ort der XML Projekt-Datei
 		String xmlLocation = appDataFolder.concat("/settings.xml");
 		if(QuizCreatorApplication.DEBUG) System.out.println("----------\nSaving program settings to: " + xmlLocation + "\n----------");
@@ -481,17 +482,6 @@ public class Exporter {
 		}
 		
 		root.addContent(settings);
-		
-		Element projectlocations = new Element("projectlocations");
-		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
-		for(int i=0; i<a.length; i++) {
-			Element project = new Element("project");
-			project.setAttribute(new Attribute("name", QuizCreatorApplication.getProjectLocations().get(a[i])));
-			project.setAttribute("location",a[i]);
-			projectlocations.addContent(project);
-		}
-		root.addContent(projectlocations);
-		
 		
 		doc.setRootElement(root);
 		

@@ -1,8 +1,6 @@
 package com.quizcreator.app.userinterface;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -12,6 +10,8 @@ import com.quizcreator.app.QuizCreatorApplication;
 import com.quizcreator.app.ie.Exporter;
 import com.quizcreator.app.ie.Importer;
 import com.quizcreator.app.ie.IncompatibleVersionException;
+import com.quizcreator.app.services.projectLocation.ProjectLocationService;
+import com.quizcreator.app.tools.FolderTools;
 import com.quizcreator.app.userinterface.images.ImageLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,7 +23,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -33,9 +32,16 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class SceneWelcome implements Initializable {
 	private final ImageLoader imageLoader;
+	private final ProjectLocationService projectLocationService;
+	private final FolderTools folderTools;
 
-	public SceneWelcome(final ImageLoader imageLoader) {
+	public SceneWelcome(
+			final ImageLoader imageLoader,
+			final FolderTools folderTools,
+			final ProjectLocationService projectLocationService) {
+		this.projectLocationService = projectLocationService;
 		this.imageLoader = imageLoader;
+		this.folderTools = folderTools;
 	}
 
 	private ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
@@ -133,13 +139,13 @@ public class SceneWelcome implements Initializable {
 	 * @param location
 	 */
 	private void loadProject(String location) {
-		Importer i = new Importer();
+		Importer i = new Importer(folderTools, projectLocationService);
 		try {
 			i.loadProject(location);
 			WindowManager.closeStage("welcomeStage");
 			Stage s = new Stage();
 			WindowManager.addStage(s, "editorStage");
-			SceneEditor e = new SceneEditor(imageLoader);
+			SceneEditor e = new SceneEditor(imageLoader, projectLocationService, folderTools);
 			s.setScene(e.getScene());
 			s.centerOnScreen();
 			s.show();
@@ -163,7 +169,7 @@ public class SceneWelcome implements Initializable {
 	protected void handleButtonAction(ActionEvent e) {
 		if(e.getSource() == buttonNewProject) {
 			if(QuizCreatorApplication.DEBUG) System.out.println("New Project");
-			SceneNewProject npc = new SceneNewProject(imageLoader);
+			SceneNewProject npc = new SceneNewProject(imageLoader, projectLocationService, folderTools);
 			Stage newprojectStage = new Stage();
 			Stage welcomeStage = WindowManager.getStage("welcomeStage");
 			WindowManager.addStage(newprojectStage, "newProjectStage");
@@ -211,11 +217,11 @@ public class SceneWelcome implements Initializable {
 	private void refreshLastEditedProjects() {
 		// last edited projects
 		vboxLastEdited.getChildren().clear();
-		String[] a = QuizCreatorApplication.getProjectLocations().keySet().toArray(new String[QuizCreatorApplication.getProjectLocations().keySet().size()]);
-		for(int i=0; i<a.length; i++) {
+		final var projectLocations = projectLocationService.loadProjectLocationsFromDisk();
+		String[] locations = projectLocations.keySet().toArray(new String[0]);
+		for (String location : locations) {
 			Button button = new Button();
-			String location = a[i];
-			button.setText(QuizCreatorApplication.getProjectLocations().get(a[i]) + "\n(" + location + ")");
+			button.setText(projectLocations.get(location) + "\n(" + location + ")");
 			button.setMinHeight(48);
 			button.setPrefWidth(Double.MAX_VALUE);
 			button.maxWidth(Double.MAX_VALUE);
@@ -227,16 +233,14 @@ public class SceneWelcome implements Initializable {
 			});
 			vboxLastEdited.getChildren().add(button);
 		}
-		if(QuizCreatorApplication.getProjectLocations().keySet().size() > 0) {
+		if(projectLocations.keySet().size() > 0) {
 			Button buttonClear = new Button();
 			buttonClear.setText(bundle.getString("menubar_clearlist"));
 			buttonClear.setPrefWidth(50000);
 			buttonClear.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					QuizCreatorApplication.getProjectLocations().clear();
-					Exporter e = new Exporter();
-					e.saveProgramSettings();
+					projectLocationService.clearProjectLocationsOnDisk();
 					refreshLastEditedProjects();
 				}
 			});
@@ -246,20 +250,15 @@ public class SceneWelcome implements Initializable {
 	
 	/**
 	 * Loads the localized scene along with all the layout, images, needed scripts...
-	 * @param resetProgram Whether the Program (and Quiz) shall be reset 
 	 * @return the scene
 	 */
-	public Scene getScene(Boolean resetProgram) {
+	public Scene getScene() {
 		try {
 			FXMLLoader loader = new FXMLLoader(
 			        getClass().getResource("SceneWelcome.fxml"), bundle
 			);
 			loader.setController(this);
 			scene = new Scene(loader.load());
-			
-			if(resetProgram) {
-				QuizCreatorApplication.setupProgram();
-			}
 			
 			// set images
 			imageNewProject.setImage(imageLoader.load("icon_new.png"));
@@ -286,11 +285,10 @@ public class SceneWelcome implements Initializable {
 
 	/**
 	 * Opens the Welcome Screen
-	 * @param programReset TRUE if the Program data (Quiz data etc) shall be reset. Useful after close project or at first start
 	 */
-	public static void open(Stage stage, Boolean programReset) {
-		SceneWelcome ws = new SceneWelcome(new ImageLoader());
-		Importer i = new Importer();
+	public static void open(Stage stage, ImageLoader imageLoader, ProjectLocationService projectLocationService, FolderTools folderTools) {
+		SceneWelcome ws = new SceneWelcome(imageLoader, folderTools, projectLocationService);
+		Importer i = new Importer(folderTools, projectLocationService);
 		try {
 			i.loadProgramSettings();
 		} catch (IncompatibleVersionException e) {
@@ -303,11 +301,10 @@ public class SceneWelcome implements Initializable {
 			Exporter exporter = new Exporter();
 			exporter.saveProgramSettings();
 		}
-		stage.setScene(ws.getScene(programReset));
+		stage.setScene(ws.getScene());
 		ResourceBundle bundle = com.quizcreator.app.i18n.Locales.getGUIBundle();
 		stage.setTitle(bundle.getString("title_welcome"));
 		stage.setResizable(false);
 		stage.show();
-		System.out.println(QuizCreatorApplication.getProjectLocations().toString());
 	}
 }

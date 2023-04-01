@@ -18,7 +18,6 @@ public class Project {
 	 * @param projectLocation
 	 */
 	public Project(String projectLocation) {
-		FolderTools.eraseWorkFolder();
 		title = "";
 		author = "";
 		this.projectLocation = projectLocation;

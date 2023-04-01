@@ -18,8 +18,8 @@ public class KeyCalculator {
 	
 	private static String location;
 			
-	public KeyCalculator() {
-		location = FolderFinder.getAppDataFolderLocation() + "/keyfile.key";
+	public KeyCalculator(final FolderTools folderTools) {
+		location = folderTools.getAppDataFolderLocation() + "/keyfile.key";
 	}
 	
 	/**

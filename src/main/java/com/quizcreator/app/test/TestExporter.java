@@ -20,7 +20,7 @@ public class TestExporter extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Project setup
-		QuizCreatorApplication.setupProgram();
+		// QuizCreatorApplication.setupCleanProject();
 		Project project = QuizCreatorApplication.getProject();
 		project.setTitle("TestProjekt");
 		project.setAuthor("Robin Kindler");

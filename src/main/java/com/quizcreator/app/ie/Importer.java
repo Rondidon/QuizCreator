@@ -10,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 import com.quizcreator.app.QuizCreatorApplication;
+import com.quizcreator.app.services.projectLocation.ProjectLocationService;
+import com.quizcreator.app.services.projectLocation.ProjectLocationServiceImpl;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -19,11 +21,19 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import com.quizcreator.app.data.*;
-import com.quizcreator.app.tools.FolderFinder;
 import com.quizcreator.app.tools.FolderTools;
 import com.quizcreator.app.tools.ZipUtilities;
 
 public class Importer {
+	private final FolderTools folderTools;
+	private final ProjectLocationService projectLocationService;
+
+	public Importer(
+			final FolderTools folderTools,
+			final ProjectLocationService projectLocationService) {
+		this.folderTools = folderTools;
+		this.projectLocationService = projectLocationService;
+	}
 	
 	private Project project;
 	
@@ -37,7 +47,7 @@ public class Importer {
 		
 		if(QuizCreatorApplication.DEBUG) System.out.println("----------\nLoading project: " + location + "\n----------");
 		// get working folder
-		String workFolder = FolderFinder.getWorkFolderLocation();
+		String workFolder = folderTools.getTempFolderLocation();
 		// Clean up working folder and make new project
 		project = new Project("");
 		// Unzip QGM file to the working folder
@@ -77,9 +87,7 @@ public class Importer {
 			QuizCreatorApplication.setProject(project);
 			
 			// add project to last edited projects list
-			QuizCreatorApplication.getProjectLocations().put(location, project.getTitle());
-			Exporter exporter = new Exporter();
-			exporter.saveProgramSettings();
+			projectLocationService.addAndSaveOnDisk(location, project.getTitle());
 			
 			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nProject loaded successfully :-)\n----------");
 			
@@ -106,7 +114,7 @@ public class Importer {
 			List<Element> audioResList = root.getChild("audioResourceList").getChildren();
 			for(Element e : audioResList) {
 				final var id = UUID.fromString(e.getAttributeValue("id"));
-				AudioFile a = new AudioFile(FolderFinder.getWorkFolderLocation().concat(e.getAttributeValue("location")), id);
+				AudioFile a = new AudioFile(folderTools.getTempFolderLocation().concat(e.getAttributeValue("location")), id);
 				a.setDescription(e.getAttributeValue("description"));
 				a.setPlaybackMode(AudioFilePlaybackMode.valueOf(e.getAttributeValue("type")));
 				a.setVolume(Double.parseDouble(e.getAttributeValue("volume")));
@@ -119,7 +127,7 @@ public class Importer {
 			List<Element> imageResList = root.getChild("imageResourceList").getChildren();
 			for(Element e : imageResList) {
 				final var id = UUID.fromString(e.getAttributeValue("id"));
-				ImageFile i = new ImageFile(FolderFinder.getWorkFolderLocation().concat(e.getAttributeValue("location")), id);
+				ImageFile i = new ImageFile(folderTools.getTempFolderLocation().concat(e.getAttributeValue("location")), id);
 				i.setDescription(e.getAttributeValue("description"));
 				project.addToImageResourceList(i);
 				if(QuizCreatorApplication.DEBUG) System.out.println("ImageFile imported: " +  i.getDescription());
@@ -563,7 +571,7 @@ public class Importer {
 		try {
 			image = new ImageFile(srcLocation);
 			// working folder defined in FolderFinder.getWorkFolderLocation()
-			String targetFolder = FolderFinder.getWorkFolderLocation() + "/image/" + image.getId().toString();
+			String targetFolder = folderTools.getTempFolderLocation() + "/image/" + image.getId().toString();
 			if(srcLocation.toLowerCase().contains("jpg")) {
 				targetFolder += ".jpg";
 			}
@@ -613,7 +621,7 @@ public class Importer {
 		try {
 			a = new AudioFile(srcLocation);
 			// working folder defined in FolderFinder.getWorkFolderLocation()
-			String targetFolder = FolderFinder.getWorkFolderLocation() + "/audio/" + a.getId().toString();
+			String targetFolder = folderTools.getTempFolderLocation() + "/audio/" + a.getId().toString();
 			if(srcLocation.toLowerCase().contains(".mp3")) {
 				targetFolder += ".mp3";
 			}
@@ -649,7 +657,7 @@ public class Importer {
 		}
 		catch (Exception e) {
 			System.out.println("Audio file import failed." 
-					+ FolderFinder.getWorkFolderLocation() + "/audio/ ?");
+					+ folderTools.getTempFolderLocation() + "/audio/ ?");
 			e.printStackTrace();
 			return;
 		}
@@ -662,7 +670,7 @@ public class Importer {
 	public void loadProgramSettings() throws IncompatibleVersionException {
 	
 		// get app folder
-		String appFolder = FolderFinder.getAppDataFolderLocation();
+		String appFolder = folderTools.getAppDataFolderLocation();
 		
 		// Open settings.xml
 		File xmlFile = new File(appFolder.concat("/settings.xml"));
@@ -688,15 +696,6 @@ public class Importer {
 			else {
 				Locale.setDefault(Locale.ENGLISH);
 			}
-			
-			List<Element> list = root.getChild("projectlocations").getChildren();
-			HashMap<String,String> projectlocations = new HashMap<String,String>();
-			for(Element e : list) {
-				if(FolderTools.isAvailable(e.getAttributeValue("location"))) {
-					projectlocations.put(e.getAttributeValue("location"), e.getAttributeValue("name"));
-				}
-			}
-			QuizCreatorApplication.setProjectLocations(projectlocations);
 			
 			if(QuizCreatorApplication.DEBUG) System.out.println("----------\nSettings loaded successfully :-)\n----------");
 			
